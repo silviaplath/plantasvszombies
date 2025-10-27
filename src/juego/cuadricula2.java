@@ -14,42 +14,43 @@ import entorno.InterfaceJuego;
 public class cuadricula2 {
 
 	Image img;
-    private double x;
-    private double y;
-    private double escala;
-    private double ancho;
-    private double alto;
+    private  double filas;
+    private double columnas =5;
+    private double tamceldas = 100;
+    private double margensup = 100;
+    private double[] coorX, coorY;
     Image pasto1, pasto2;
     Entorno e;
-    double[] coorX;
-    double[] coorY;
+    private double escala = 0.5;
+   
 public cuadricula2 (double x , double y , Entorno e) {
+	this.filas = Math.floor((e.alto() - margensup) / tamceldas);
+	this.coorX=new double [(int)columnas];
+	this.coorY= new double [(int)filas];
 	
-	
-	this.x = x;
-    this.y = y;
     this.e = e;
 
     this.pasto1 = Herramientas.cargarImagen("pasto1.jpeg");
     this.pasto2 = Herramientas.cargarImagen("pasto2.jpg");
-    this.escala = 0.1;
+    
 
-    this.ancho = this.pasto1.getWidth(null) * this.escala;
-    this.alto = this.pasto1.getHeight(null) * this.escala;
-
-    this.coorX = new double [] {50,150,250,350,450,550,650,750};
-    this.coorY = new double []{130,230,330,430,530};
+   for (int i =0; i< columnas; i++) {
+	   coorX[i]= i * tamceldas + tamceldas / 2;              
+   }
+   for (int j=0 ;j < filas; j++) {
+	   coorY[j] = margensup + tamceldas / 2 + j * tamceldas; 
+   }
 
     
 
+    
+
+   
 }
 public void dibujar () {
     for (int i = 0; i < coorY.length; i++) {
         for (int j = 0; j < coorX.length; j++) {
-            if ( (i + j) % 2 == 0)
-            	img = pasto1;
-            else
-                img = pasto2;
+        	 Image img = ((i + j) % 2 == 0) ? pasto1 : pasto2;
             e.dibujarImagen(img, coorX[j], coorY[i], 0, escala);
         }
     }
