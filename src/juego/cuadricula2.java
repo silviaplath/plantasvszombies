@@ -9,15 +9,15 @@ import javax.swing.ImageIcon;
 
 import java.awt.Color;
 
-import entorno.Entorno;
+import entorno.Entorno; 
 import entorno.InterfaceJuego;
 public class cuadricula2 {
 
 	Image img;
     private  int filas=5;
-    private int columnas =9;
+    private int columnas =10;
     private double tamceldas;
-    private double margensup = 160;
+    private double margensup = 200;
     private double[] coorX, coorY;
     Image pasto1, pasto2;
     Entorno e;
@@ -51,7 +51,8 @@ public void dibujar () {
         	 
         	 double escalaX = tamceldas / img.getWidth(null);
              double escalaY = tamceldas / img.getHeight(null);
-             double escalaFinal = Math.min(escalaX, escalaY);
+             double escalaFinal = Math.max(escalaX, escalaY);
+            e.dibujarImagen(img, coorX[j], coorY[i], 0, escalaFinal);
             e.dibujarImagen(img, coorX[j], coorY[i], 0, escalaFinal);
         }
     }
