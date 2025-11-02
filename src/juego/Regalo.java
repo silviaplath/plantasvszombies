@@ -12,18 +12,12 @@ import java.awt.Color;
 import entorno.Entorno; 
 import entorno.InterfaceJuego;
 public class Regalo {
+
 private double X;
 private double Y;
 private Image img;
-private double escala=0.08;
-	public Regalo(Entorno e) {
-		this.X =X;
-		this.Y =Y;
-		
-		
-		this.img=Herramientas.cargarImagen("png-clipart-gift-purple-drawing-purple-cartoon-holiday-gift-miscellaneous-cartoon-character (1).png");
-
-	}
+private double escala=0.08;	
+	
 public Regalo(double X, double Y) {
 	this.X = X;
     this.Y = Y;
@@ -32,5 +26,5 @@ public Regalo(double X, double Y) {
 	
 public void dibujar (Entorno e) {
 	 e.dibujarImagen(this.img,this.Y, this.X,0, this.escala  );
-}
-}
+
+}}

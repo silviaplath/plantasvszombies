@@ -20,7 +20,8 @@ public class Juego extends InterfaceJuego
 	private cuadricula2 cuadricula;
 	Regalo[] regalos;
 	
-	
+	 private Planta plantaDisponible;
+	 private Planta plantaSeleccionada;
 	Juego()
 	{
 		
@@ -32,6 +33,10 @@ public class Juego extends InterfaceJuego
 		double posXinical =80;
 		double separacion =80;
 		double margensup= 160;
+		
+		Image planta = Herramientas.cargarImagen("planta.gif");
+        plantaDisponible = new Planta(100, 50, planta, 0.3);
+    
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
@@ -45,7 +50,8 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
-	
+		double mx = entorno.mouseX();
+        double my = entorno.mouseY();
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
@@ -55,8 +61,29 @@ public class Juego extends InterfaceJuego
 			}
 				
 			}
-	           
-		}
+			 plantaDisponible.dibujar(entorno);
+			 if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+		            if (plantaDisponible.contiene(mx, my)) {
+		            	  plantaSeleccionada = new Planta(mx, my, Herramientas.cargarImagen("planta.gif"),0.3);
+		            }
+		        }
+			 if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && plantaSeleccionada != null && !plantaSeleccionada.estaColocada()) {
+		            plantaSeleccionada.moverA(mx, my);
+		        }
+			 if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && plantaSeleccionada != null && !plantaSeleccionada.estaColocada()) {
+		            plantaSeleccionada.setColocada(true);
+		        }
+			 if (plantaSeleccionada != null && plantaSeleccionada.estaColocada()) {
+		            if (entorno.estaPresionada('w')) plantaSeleccionada.moverArriba();
+		            if (entorno.estaPresionada('s')) plantaSeleccionada.moverAbajo();
+		            if (entorno.estaPresionada('a')) plantaSeleccionada.moverIzquierda();
+		            if (entorno.estaPresionada('d')) plantaSeleccionada.moverDerecha();
+		        }
+			 if (plantaSeleccionada != null) {
+		            plantaSeleccionada.dibujar(entorno);
+		        }
+		            }
+		
 
 	
 	
