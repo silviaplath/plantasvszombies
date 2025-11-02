@@ -19,9 +19,13 @@ public class Juego extends InterfaceJuego
 	private Entorno entorno;
 	private cuadricula2 cuadricula;
 	Regalo[] regalos;
+	private Planta plantasDisponibles;
+	private Planta[] plantasTablero;          
+	private Planta[] plantasArrastrando; 
+	private int maxTablero = 20;           
+	private int maxArrastrando = 5; 
+	private double escala = 0.2;
 	
-	 private Planta plantaDisponible;
-	 private Planta plantaSeleccionada;
 	Juego()
 	{
 		
@@ -34,9 +38,11 @@ public class Juego extends InterfaceJuego
 		double separacion =80;
 		double margensup= 160;
 		
+		plantasTablero = new Planta[maxTablero];
+        plantasArrastrando = new Planta[maxArrastrando];
 		Image planta = Herramientas.cargarImagen("planta.gif");
-        plantaDisponible = new Planta(100, 50, planta, 0.3);
-    
+		plantasDisponibles = new Planta(100, 50, planta, escala);
+		
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
@@ -61,30 +67,54 @@ public class Juego extends InterfaceJuego
 			}
 				
 			}
-			 plantaDisponible.dibujar(entorno);
-			 if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-		            if (plantaDisponible.contiene(mx, my)) {
-		            	  plantaSeleccionada = new Planta(mx, my, Herramientas.cargarImagen("planta.gif"),0.3);
+		plantasDisponibles.dibujar(entorno);
+		 if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+		 for (int i = 0; i < maxArrastrando; i++) {
+			 if (plantasArrastrando[i] == null) {
+		        plantasArrastrando[i] = new Planta(plantasDisponibles.getX(), plantasDisponibles.getY(),Herramientas.cargarImagen("planta.png"), escala);
+		                        break; 
+		     }
+		                    
+		        }
+			 
+		            } 
+		     for  (int i = 0; i < maxArrastrando; i++) {
+		       Planta p = plantasArrastrando[i];
+		       if (p != null) {
+		      if (!p.estaColocada() && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)) {
+		      p.dibujar(entorno);
+		     }
+	}}
+		  if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+		   for (int i = 0; i < maxArrastrando; i++) {
+		    Planta p = plantasArrastrando[i];
+		    if (p != null && !p.estaColocada()&& p.getY() > 100) {
+		   p.setColocada(true);
+		                           
+		  for (int j = 0; j < maxTablero; j++) {
+			  if (plantasTablero[j] == null) {
+                  plantasTablero[j] = p;
+                  break;
+              }
+          }
+          plantasArrastrando[i] = null;
+      }
+  }
+                             
+ for (int a= 0; a < maxTablero; a++) {
+ Planta p = plantasTablero[a];
+		                    if (p != null) {
+		                        if (entorno.estaPresionada('w')) p.moverArriba();
+		                        if (entorno.estaPresionada('s')) p.moverAbajo();
+		                        if (entorno.estaPresionada('a')) p.moverIzquierda();
+		                        if (entorno.estaPresionada('d')) p.moverDerecha();
+		                    }
+		                }
+		              
+		          
+		                }
 		            }
-		        }
-			 if (entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && plantaSeleccionada != null && !plantaSeleccionada.estaColocada()) {
-		            plantaSeleccionada.moverA(mx, my);
-		        }
-			 if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO) && plantaSeleccionada != null && !plantaSeleccionada.estaColocada()) {
-		            plantaSeleccionada.setColocada(true);
-		        }
-			 if (plantaSeleccionada != null && plantaSeleccionada.estaColocada()) {
-		            if (entorno.estaPresionada('w')) plantaSeleccionada.moverArriba();
-		            if (entorno.estaPresionada('s')) plantaSeleccionada.moverAbajo();
-		            if (entorno.estaPresionada('a')) plantaSeleccionada.moverIzquierda();
-		            if (entorno.estaPresionada('d')) plantaSeleccionada.moverDerecha();
-		        }
-			 if (plantaSeleccionada != null) {
-		            plantaSeleccionada.dibujar(entorno);
-		        }
-		            }
-		
-
+		        
 	
 	
 
