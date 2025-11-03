@@ -28,7 +28,12 @@ public class Juego extends InterfaceJuego
 	
 	
 	
-	
+	private Planta plantasDisponibles;
+	private Planta[] plantasTablero;          
+	private int maxTablero = 50;            
+	private double escala = 0.15;
+	Planta plantaArrastrando = null;
+	private Planta plantaSeleccionada = null;
 	Juego()
 	{
 		
@@ -40,6 +45,12 @@ public class Juego extends InterfaceJuego
 		double posXinical =80;
 		double separacion =80;
 		double margensup= 160;
+		
+		plantasTablero = new Planta[maxTablero];
+		Image planta = Herramientas.cargarImagen("planta.gif");
+		plantasDisponibles = new Planta(100, 50, planta, escala);
+		
+		
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
@@ -73,7 +84,8 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
-	
+		double mx = entorno.mouseX();
+        double my = entorno.mouseY();
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
@@ -97,9 +109,44 @@ public class Juego extends InterfaceJuego
 			}
 				
 			}
-	           
-		}
+		plantasDisponibles.dibujar(entorno);
+		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
+		    plantaArrastrando = new Planta(plantasDisponibles.getX(), plantasDisponibles.getY(),
+		                                   Herramientas.cargarImagen("planta.gif"), escala);
+		     }
+		 if (plantaArrastrando != null && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)) {
+			    plantaArrastrando.moverA(entorno.getX(), entorno.getY());
+			    plantaArrastrando.dibujar(entorno);                 
+		       
+		     }
+	
+		 if (plantaArrastrando != null && entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+			    plantaArrastrando.setColocada(true);
+		 for (int i = 0; i < maxTablero; i++) {
+		 if (plantasTablero[i] == null) {
+		 plantasTablero[i] = plantaArrastrando;
+		 break;
+			        }
+			    }
+		 plantaSeleccionada = plantaArrastrando;
+			  plantaArrastrando = null;
+		 }
+                             
+ for (int i= 0; i < maxTablero; i++) {
+	 if (plantasTablero[i] != null) {
+         plantasTablero[i].dibujar(entorno);
+     }
+ }
 
+	 if (plantaSeleccionada != null) {
+         if (entorno.estaPresionada('w')) plantaSeleccionada.moverArriba();
+         if (entorno.estaPresionada('s')) plantaSeleccionada.moverAbajo();
+         if (entorno.estaPresionada('a')) plantaSeleccionada.moverIzquierda();
+         if (entorno.estaPresionada('d')) plantaSeleccionada.moverDerecha();
+     }
+ }
+	
+		        
 	
 	
 

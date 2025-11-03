@@ -11,36 +11,43 @@ import java.awt.Color;
 
 import entorno.Entorno; 
 import entorno.InterfaceJuego;
+
 public class Planta {
-double x,y , escala , ancho,alto ;
-Image imagen , imagenseleccionada;
-Entorno e;
-boolean seleccionado;
-public Planta (double x,double y, Entorno e) {
-	this.x =x;
-	this.y=y;
-	this.e=e;
-	this.escala=0.35;
-	this.imagen=Herramientas.cargarImagen("planta.gif");
-	this.imagenseleccionada= Herramientas.cargarImagen("planta.gif");
-	this.seleccionado=false;
-	
-	
+	private double X;
+	private double Y;
+    private Image imagen;	
+private boolean colocada;
+private double velocidad;
+private double escala;
+public Planta(double x, double y, Image imagen, double escala) {
+    this.X = x;
+    this.Y = y;
+    this.imagen = imagen;
+    this.colocada = false;
+    this.velocidad=3;
+    this.escala= escala;
 }
-public void dibujar () {
-	if (seleccionado) {
-		e.dibujarImagen(imagenseleccionada, x, y, 0, escala);
-	}
+public void dibujar (Entorno e) {
+	 e.dibujarImagen(imagen, X,Y,0,escala);
+     
+    
 }
-public double distancia (double x1, double y1, double x2, double y2) {
-	return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)+(y1-y2));
+public boolean contiene(double mx, double my) {
+    double ancho=imagen.getWidth(null)*escala;
+    double alto= imagen.getHeight(null)*escala;
+    return mx >= X - ancho / 2 && mx <= X + ancho / 2 &&
+            my >= Y - alto / 2 && my <= Y + alto / 2;
+
 }
-public boolean encima (double xM , double yM ) {
-	return distancia (xM,yM,this.x, this.y)<20;
-	
-}
-public void arrastrar (double xM, double yM) {
-	this.x= xM;
-	this.y=yM;
-}
+public void moverA(double x, double y) {this.X = x; this.Y = y;}
+public void moverArriba() { if (colocada) Y -= velocidad; }
+public void moverAbajo() { if (colocada) Y += velocidad; }
+public void moverIzquierda() { if (colocada) X -= velocidad; }
+public void moverDerecha() { if (colocada) X += velocidad; }
+
+public void setColocada(boolean colocada) { this.colocada = colocada; }
+public boolean estaColocada() { return colocada; }
+
+public double getX() { return X; }
+public double getY() { return Y; }
 }
