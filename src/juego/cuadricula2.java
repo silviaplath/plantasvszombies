@@ -22,7 +22,7 @@ public class cuadricula2 {
     Image pasto1, pasto2;
     Entorno e;
    
-public cuadricula2 (double x , double y , Entorno e) {
+public  cuadricula2 (double x , double y , Entorno e) {
 	
 	 this.e = e;
 	
@@ -39,11 +39,18 @@ public cuadricula2 (double x , double y , Entorno e) {
 
    this.pasto1 = Herramientas.cargarImagen("pasto1.jpeg");
    this.pasto2 = Herramientas.cargarImagen("pasto2.jpg");
-
-    
-
-   
 }
+   public double getPosXColumna(int col) {
+	   return this.coorX[col];  
+   }
+   public double getPosYFila(int fila) {
+	   return this.coorY[fila];
+   }
+   public int getCantidadFilas() {
+	   return this.filas;
+   }
+	 
+
 public void dibujar () {
     for (int i = 0; i < coorY.length; i++) {
         for (int j = 0; j < coorX.length; j++) {

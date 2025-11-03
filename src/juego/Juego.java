@@ -11,6 +11,9 @@ import java.awt.Color;
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 
+import java.util.Random;
+import java.util.random.*;
+
 public class Juego extends InterfaceJuego
 {
 	Image fondo;
@@ -19,6 +22,11 @@ public class Juego extends InterfaceJuego
 	private Entorno entorno;
 	private cuadricula2 cuadricula;
 	Regalo[] regalos;
+	zombie[]zombies;
+	int cantzombies;
+	Random rnd;
+	
+	
 	
 	
 	Juego()
@@ -35,12 +43,32 @@ public class Juego extends InterfaceJuego
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
+		this.zombies=new zombie [20];	
+		this.cantzombies=0;
+		this.rnd=new Random();
+		
 		}
 		
 		
 		this.entorno.iniciar();
 	}
-
+	
+	public void generarzombies() {
+		if (cantzombies<zombies.length) {
+			int filaRandom=rnd.nextInt(cuadricula.getCantidadFilas());
+			double y= cuadricula.getPosYFila(filaRandom);
+			double x=entorno.ancho()+ 50;
+			
+			zombies[cantzombies]=new zombie(x,y);
+			cantzombies++;
+		}
+	}
+    private void eliminarZombieEn(int i) {
+    	if (i<0 || i >= cantzombies) return;
+    	zombies[i]=zombies[cantzombies-1];
+    	zombies[cantzombies-1]=null;
+    	cantzombies--;
+    }
 	
 	 
 	public void tick()
@@ -52,6 +80,20 @@ public class Juego extends InterfaceJuego
 			for (Regalo r : regalos) {
 				if (r != null) {
 	                r.dibujar(entorno);
+			}
+			if (rnd.nextInt(80)==0) {
+				generarzombies();
+			}
+			for (int i=0;i<cantzombies;i++) {
+				zombie z=zombies[i];
+				if (z!= null) {
+					z.mover();
+					z.dibujar(entorno);
+					if (z.getX()< - 50) {
+						eliminarZombieEn(i);
+						i--;
+					}
+				}
 			}
 				
 			}
