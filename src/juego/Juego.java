@@ -25,15 +25,12 @@ public class Juego extends InterfaceJuego
 	zombie[]zombies;
 	int cantzombies;
 	Random rnd;
-<<<<<<< HEAD
+
 	private Tablero tablero;
-=======
+
 	int totalEliminados=0;
 	int objetivoEliminacion=50;
 	boolean juegoTerminado=false;
-	
-	
->>>>>>> a8b2f64f623cf75ada2c27691ccd59a79a67fbe4
 	
 	
 	private Planta plantasDisponibles;
@@ -46,6 +43,8 @@ public class Juego extends InterfaceJuego
 	private boolean sPresionada = false;
 	private boolean aPresionada = false;
 	private boolean dPresionada = false;
+	private double tiempoUltimoZombie = 0;
+	private double tiempoUltimaPlanta = 0;
 
 	Juego()
 	{
@@ -62,7 +61,7 @@ public class Juego extends InterfaceJuego
 		plantasTablero = new Planta[maxTablero];
 		plantasTablero = new Planta[maxTablero];
 		Image planta = Herramientas.cargarImagen("planta.png");
-		plantasDisponibles = new Planta(100, 50, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
+		plantasDisponibles = new Planta(100, 80, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
 		
 		
 		for (int i=0 ;i < regalos.length;i++) {
@@ -102,6 +101,10 @@ public class Juego extends InterfaceJuego
 			cuadricula.dibujar();
 			tablero.sumarTiempo(1.0 / 60.0);
 		    tablero.dibujar(entorno);
+		    double tiempoActual = tablero.getTiempo();
+		    double tiempoFaltante = 5 - (tiempoActual - tiempoUltimaPlanta);
+		    if (tiempoFaltante < 0) tiempoFaltante = 0;
+		    tablero.setCuentaRegresiva(tiempoFaltante);
 			for (Regalo r : regalos) {
 				if (r != null) {
 	                r.dibujar(entorno);
@@ -131,21 +134,22 @@ public class Juego extends InterfaceJuego
 			        }
 
 			        if (z.debeEliminarse()) {
-<<<<<<< HEAD
+
 			        zombies[i] = null;
 			        tablero.sumarZombieEliminado();	
-=======
+
 			        	totalEliminados++;
 			        	zombies[i] = null;
->>>>>>> a8b2f64f623cf75ada2c27691ccd59a79a67fbe4
+
 			        }
 				}
 			}
 			if (totalEliminados >= objetivoEliminacion) {
 				System.out.println("GANASTE! eliminaste"+ totalEliminados + "zombies.");
 			}
-				
+			
 			}
+			
 			for (int i = 0; i < maxTablero; i++) {
 			    if (plantasTablero[i] != null) {
 			        plantasTablero[i].tick(entorno, entorno.ancho());
@@ -155,9 +159,14 @@ public class Juego extends InterfaceJuego
 			        if (plantaArrastrando == null) {   
 		plantasDisponibles.dibujar(entorno);
 			        }
-		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
-		    plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.png"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
-		     };
+			        if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
+			           
+			            if (tiempoActual - tiempoUltimaPlanta >= 3) {
+			                plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.png"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
+			                tiempoUltimaPlanta = tiempoActual;
+			            }
+			       
+			        }
 	
 		 if (plantaArrastrando != null && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)) {
 			    plantaArrastrando.moverA(mx, my);
