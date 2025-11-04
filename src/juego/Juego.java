@@ -25,6 +25,10 @@ public class Juego extends InterfaceJuego
 	zombie[]zombies;
 	int cantzombies;
 	Random rnd;
+	int totalEliminados=0;
+	int objetivoEliminacion=50;
+	boolean juegoTerminado=false;
+	
 	
 	
 	
@@ -60,12 +64,8 @@ public class Juego extends InterfaceJuego
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
-<<<<<<< HEAD
-		this.zombies=new zombie [10];	
-		this.cantzombies=0;
-		this.rnd=new Random();
-=======
->>>>>>> 02ec85035bbc70a6b772b55559d42dcefdb43e1f
+
+
 		
 		}
 		this.zombies=new zombie [15];	
@@ -89,6 +89,7 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
+		if (juegoTerminado) return;
 		
 		double mx = entorno.mouseX();
         double my = entorno.mouseY();
@@ -107,11 +108,30 @@ public class Juego extends InterfaceJuego
 			    if (z != null) {
 			        z.mover();
 			        z.dibujar(entorno);
+			        
+			        for (int p = 0; p < plantasTablero.length; p++) {
+			        	Planta planta= plantasTablero[p];
+			        	if(planta!= null && planta.estaColocada() ){
+			        		
+			        		if (Math.abs(z.getX()-planta.getX()) < 25 && Math.abs(z.getY()-planta.getY()) < 25) {
+			        			plantasTablero[p]= null;
+			        		}
+			        		
+			        	}
+			        }
+			        if (z.getX()<120) {
+			        	juegoTerminado=true;
+			        	System.out.println("PERDISTE! un zombie atrapo a los regalos");
+			        }
 
 			        if (z.debeEliminarse()) {
+			        	totalEliminados++;
 			        	zombies[i] = null;
 			        }
 				}
+			}
+			if (totalEliminados >= objetivoEliminacion) {
+				System.out.println("GANASTE! eliminaste"+ totalEliminados + "zombies.");
 			}
 				
 			}
@@ -121,7 +141,7 @@ public class Juego extends InterfaceJuego
 			    }
 			}
 
-			        if (plantaArrastrando == null) {    
+			        if (plantaArrastrando == null) {   
 		plantasDisponibles.dibujar(entorno);
 			        }
 		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
@@ -134,14 +154,8 @@ public class Juego extends InterfaceJuego
 		       
 		     }
 		 if (plantaArrastrando != null && entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
-<<<<<<< HEAD
-			 
-			    plantaArrastrando.setColocada(true);
-		 for (int i = 0; i < maxTablero; i++) {
-		 if (plantasTablero[i] == null) {
-		 plantasTablero[i] = plantaArrastrando;
-		 break;
-=======
+
+
 			    if (cuadricula.estaDentro(entorno.mouseX(), entorno.mouseY())) {
 			        int fila = cuadricula.getFilaDesdeY(entorno.mouseY());
 			        int col  = cuadricula.getColumnaDesdeX(entorno.mouseX());
@@ -230,11 +244,12 @@ public class Juego extends InterfaceJuego
 			                    }
 			                }
 			            }
->>>>>>> 02ec85035bbc70a6b772b55559d42dcefdb43e1f
+
 			        }
 			    }
+		}
 		 }
-			}
+		 
 
 	private boolean estaCeldaOcupada(int fila, int columna) {
 	    for (int i = 0; i < maxTablero; i++) {

@@ -30,7 +30,7 @@ public  cuadricula2 (double x , double y , Entorno e) {
 	tamceldas = Math.min(e.ancho() /(double) columnas, (e.alto()- margensup) / (double) filas);
 	this.coorX=new double [(int)columnas];
 	this.coorY= new double [(int)filas];
-	this.ocupado = new boolean[filas][columnas];
+
    for (int i =0; i< columnas; i++) {
 	   coorX[i]= i * tamceldas + tamceldas / 2;              
    }
@@ -74,21 +74,8 @@ public void dibujar () {
     }
 
 }
-<<<<<<< HEAD
-public boolean estaOcupado(int fila, int col) {
-    return ocupado[fila][col];
-}
 
-public void ocupar(int fila, int col) {
-    ocupado[fila][col] = true;
-}
-public int getColumnaDesdeX(double x) {
-    return (int)(x / tamceldas);
-}
 
-public int getFilaDesdeY(double y) {
-    return (int)((y - margensup) / tamceldas);
-=======
 public int getColumnaDesdeX(double x) {
     int col = (int) (x / tamceldas);
     if (col < 0 || col >= columnas) return -1;
@@ -102,7 +89,7 @@ public int getFilaDesdeY(double y) {
 public boolean estaDentro(double x, double y) {
     return x >= 0 && x < columnas * tamceldas &&
            y >= margensup && y < margensup + filas * tamceldas;
->>>>>>> 02ec85035bbc70a6b772b55559d42dcefdb43e1f
+
 }
 }
 
