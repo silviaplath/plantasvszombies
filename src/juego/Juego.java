@@ -60,13 +60,11 @@ public class Juego extends InterfaceJuego
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
+		
+		}
 		this.zombies=new zombie [15];	
 		this.cantzombies=0;
 		this.rnd=new Random();
-		
-		}
-		
-		
 		this.entorno.iniciar();
 	}
 	
@@ -80,12 +78,7 @@ public class Juego extends InterfaceJuego
 			cantzombies++;
 		}
 	}
-    private void eliminarZombieEn(int i) {
-    	if (i<0 || i >= cantzombies) return;
-    	zombies[i]=zombies[cantzombies-1];
-    	zombies[cantzombies-1]=null;
-    	cantzombies--;
-    }
+    
 	
 	 
 	public void tick()
@@ -103,15 +96,15 @@ public class Juego extends InterfaceJuego
 			if (rnd.nextInt(80)==0) {
 				generarzombies();
 			}
-			for (int i=0;i<cantzombies;i++) {
-				zombie z=zombies[i];
-				if (z!= null) {
-					z.mover();
-					z.dibujar(entorno);
-					if (z.getX()< - 50) {
-						eliminarZombieEn(i);
-						i--;
-					}
+			for (int i = 0; i < zombies.length; i++) {
+			    zombie z = zombies[i];
+			    if (z != null) {
+			        z.mover();
+			        z.dibujar(entorno);
+
+			        if (z.debeEliminarse()) {
+			        	zombies[i] = null;
+			        }
 				}
 			}
 				
@@ -204,8 +197,30 @@ public class Juego extends InterfaceJuego
 			        dPresionada = false;
 			    }
 		 }
-			 }
 		 
+		 for (int i = 0; i < plantasTablero.length; i++) {
+			    Planta p = plantasTablero[i];
+			    if (p != null && p.isColocada()) {
+			        AtaquePlanta[] ataques = p.getAtaques();
+
+			        for (int j = 0; j < ataques.length; j++) {
+			            AtaquePlanta a = ataques[j];
+			            if (a != null) {
+			                for (int k = 0; k < zombies.length; k++) {
+			                    zombie z = zombies[k];
+			                    if (z != null && !z.estaMuerto()) {
+			                        if (colision(a, z)) {
+			                            z.restarVida(1);
+			                            ataques[j] = null; 
+			                        }
+			                    }
+			                }
+			            }
+			        }
+			    }
+		 }
+			}
+
 	private boolean estaCeldaOcupada(int fila, int columna) {
 	    for (int i = 0; i < maxTablero; i++) {
 	        Planta p = plantasTablero[i];
@@ -215,6 +230,11 @@ public class Juego extends InterfaceJuego
 	    }
 	    return false;
 	}
+	
+	private boolean colision(AtaquePlanta a, zombie z) {
+	    return Math.abs(a.getX() - z.getX()) < 20 && Math.abs(a.getY() - z.getY()) < 20;
+	}
+
 
 	    
 	 

@@ -27,6 +27,8 @@ private double margenSup;
 private AtaquePlanta [] ataques;
 private int tiempoDisparo;
 private int intervaloDisparo;
+private Image imagenAtaque;
+
 public Planta(double x, double y, Image imagen, double escala,double tamcelda, double margenSup) {
     this.X = x;
     this.Y = y;
@@ -39,7 +41,10 @@ public Planta(double x, double y, Image imagen, double escala,double tamcelda, d
     this.columna = 0;
     this.margenSup = margenSup;
     
-    this.ataques = new AtaquePlanta[10];
+    this.imagenAtaque = Herramientas.cargarImagen("ezgif-882e311c995332.gif");
+
+    this.ataques = new AtaquePlanta[20];
+
     this.tiempoDisparo = 0;
     this.intervaloDisparo = 60; 
 }
@@ -60,10 +65,10 @@ public void tick(Entorno e, double anchoPantalla) {
     dibujar(e);
 }
 private void disparar() {
-    Image fuego = Herramientas.cargarImagen("ezgif-882e311c995332.gif"); 
+
     for (int i = 0; i < ataques.length; i++) {
         if (ataques[i] == null) {
-            ataques[i] = new AtaquePlanta(X + 20, Y, 4, fuego);
+            ataques[i] = new AtaquePlanta(X + 20, Y, 4, imagenAtaque);
             break;
         }
     }
@@ -140,4 +145,8 @@ public int getColumna() { return columna; }
 	 
 	    public double getX() { return X; }
 	    public double getY() { return Y; }
-	} 
+	    public AtaquePlanta[] getAtaques() {
+	        return ataques;
+	    }
+	
+} 
