@@ -25,6 +25,9 @@ public class Juego extends InterfaceJuego
 	zombie[]zombies;
 	int cantzombies;
 	Random rnd;
+
+	private Tablero tablero;
+
 	int totalEliminados=0;
 	int objetivoEliminacion=50;
 	boolean juegoTerminado=false;
@@ -32,6 +35,7 @@ public class Juego extends InterfaceJuego
 	int maxZombiesGenerar=50;
 	
 	
+
 	
 	
 	private Planta plantasDisponibles;
@@ -52,12 +56,12 @@ public class Juego extends InterfaceJuego
 		this.fondo = Herramientas.cargarImagen("fondo.png");
 		this.cuadricula = new cuadricula2 (0, 0, entorno);
 		this.regalos= new Regalo[5];
+		this.tablero = new Tablero(50);
 		double posY= 60;
 		double posXinical =80;
 		double separacion =80;
 		double margensup= 160;
-		
-		
+		plantasTablero = new Planta[maxTablero];
 		plantasTablero = new Planta[maxTablero];
 		Image planta = Herramientas.cargarImagen("planta.png");
 		plantasDisponibles = new Planta(100, 50, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
@@ -70,7 +74,7 @@ public class Juego extends InterfaceJuego
 
 		
 		}
-		this.zombies=new zombie [2];	
+		this.zombies=new zombie [10];	
 		this.cantzombies=0;
 		this.rnd=new Random();
 		this.entorno.iniciar();
@@ -108,6 +112,8 @@ public class Juego extends InterfaceJuego
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
+			tablero.sumarTiempo(1.0 / 60.0);
+		    tablero.dibujar(entorno);
 			for (Regalo r : regalos) {
 				if (r != null) {
 	                r.dibujar(entorno);
@@ -137,8 +143,13 @@ public class Juego extends InterfaceJuego
 			        }
 
 			        if (z.debeEliminarse()) {
+
+			        zombies[i] = null;
+			        tablero.sumarZombieEliminado();	
+
 			        	totalEliminados++;
 			        	zombies[i] = null;
+
 			        }
 				}
 			}
