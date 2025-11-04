@@ -25,7 +25,15 @@ public class Juego extends InterfaceJuego
 	zombie[]zombies;
 	int cantzombies;
 	Random rnd;
+<<<<<<< HEAD
 	private Tablero tablero;
+=======
+	int totalEliminados=0;
+	int objetivoEliminacion=50;
+	boolean juegoTerminado=false;
+	
+	
+>>>>>>> a8b2f64f623cf75ada2c27691ccd59a79a67fbe4
 	
 	
 	private Planta plantasDisponibles;
@@ -60,6 +68,8 @@ public class Juego extends InterfaceJuego
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
+
+
 		
 		}
 		this.zombies=new zombie [15];	
@@ -83,6 +93,7 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
+		if (juegoTerminado) return;
 		
 		double mx = entorno.mouseX();
         double my = entorno.mouseY();
@@ -103,12 +114,35 @@ public class Juego extends InterfaceJuego
 			    if (z != null) {
 			        z.mover();
 			        z.dibujar(entorno);
+			        
+			        for (int p = 0; p < plantasTablero.length; p++) {
+			        	Planta planta= plantasTablero[p];
+			        	if(planta!= null && planta.estaColocada() ){
+			        		
+			        		if (Math.abs(z.getX()-planta.getX()) < 25 && Math.abs(z.getY()-planta.getY()) < 25) {
+			        			plantasTablero[p]= null;
+			        		}
+			        		
+			        	}
+			        }
+			        if (z.getX()<120) {
+			        	juegoTerminado=true;
+			        	System.out.println("PERDISTE! un zombie atrapo a los regalos");
+			        }
 
 			        if (z.debeEliminarse()) {
+<<<<<<< HEAD
 			        zombies[i] = null;
 			        tablero.sumarZombieEliminado();	
+=======
+			        	totalEliminados++;
+			        	zombies[i] = null;
+>>>>>>> a8b2f64f623cf75ada2c27691ccd59a79a67fbe4
 			        }
 				}
+			}
+			if (totalEliminados >= objetivoEliminacion) {
+				System.out.println("GANASTE! eliminaste"+ totalEliminados + "zombies.");
 			}
 				
 			}
@@ -118,7 +152,7 @@ public class Juego extends InterfaceJuego
 			    }
 			}
 
-			        if (plantaArrastrando == null) {    
+			        if (plantaArrastrando == null) {   
 		plantasDisponibles.dibujar(entorno);
 			        }
 		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
@@ -131,6 +165,8 @@ public class Juego extends InterfaceJuego
 		       
 		     }
 		 if (plantaArrastrando != null && entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+
+
 			    if (cuadricula.estaDentro(entorno.mouseX(), entorno.mouseY())) {
 			        int fila = cuadricula.getFilaDesdeY(entorno.mouseY());
 			        int col  = cuadricula.getColumnaDesdeX(entorno.mouseX());
@@ -219,10 +255,12 @@ public class Juego extends InterfaceJuego
 			                    }
 			                }
 			            }
+
 			        }
 			    }
+		}
 		 }
-			}
+		 
 
 	private boolean estaCeldaOcupada(int fila, int columna) {
 	    for (int i = 0; i < maxTablero; i++) {

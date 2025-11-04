@@ -19,6 +19,7 @@ public class cuadricula2 {
     private double tamceldas;
     private double margensup = 200;
     private double[] coorX, coorY;
+    private boolean[][] ocupado;
     Image pasto1, pasto2;
     Entorno e;
    
@@ -29,7 +30,7 @@ public  cuadricula2 (double x , double y , Entorno e) {
 	tamceldas = Math.min(e.ancho() /(double) columnas, (e.alto()- margensup) / (double) filas);
 	this.coorX=new double [(int)columnas];
 	this.coorY= new double [(int)filas];
-	
+
    for (int i =0; i< columnas; i++) {
 	   coorX[i]= i * tamceldas + tamceldas / 2;              
    }
@@ -73,6 +74,8 @@ public void dibujar () {
     }
 
 }
+
+
 public int getColumnaDesdeX(double x) {
     int col = (int) (x / tamceldas);
     if (col < 0 || col >= columnas) return -1;
@@ -86,6 +89,7 @@ public int getFilaDesdeY(double y) {
 public boolean estaDentro(double x, double y) {
     return x >= 0 && x < columnas * tamceldas &&
            y >= margensup && y < margensup + filas * tamceldas;
+
 }
 }
 
