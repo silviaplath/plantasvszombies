@@ -54,7 +54,7 @@ public class Juego extends InterfaceJuego
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
-		this.zombies=new zombie [20];	
+		this.zombies=new zombie [10];	
 		this.cantzombies=0;
 		this.rnd=new Random();
 		
@@ -121,6 +121,7 @@ public class Juego extends InterfaceJuego
 		     }
 	
 		 if (plantaArrastrando != null && entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+			 
 			    plantaArrastrando.setColocada(true);
 		 for (int i = 0; i < maxTablero; i++) {
 		 if (plantasTablero[i] == null) {
