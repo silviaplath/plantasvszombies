@@ -24,6 +24,9 @@ private double tamCelda;
 private double escala;
 private double margenSup;
 
+private AtaquePlanta [] ataques;
+private int tiempoDisparo;
+private int intervaloDisparo;
 public Planta(double x, double y, Image imagen, double escala,double tamcelda, double margenSup) {
     this.X = x;
     this.Y = y;
@@ -35,14 +38,57 @@ public Planta(double x, double y, Image imagen, double escala,double tamcelda, d
     this.fila = 0;
     this.columna = 0;
     this.margenSup = margenSup;
+    
+    this.ataques = new AtaquePlanta[10];
+    this.tiempoDisparo = 0;
+    this.intervaloDisparo = 60; 
 }
 public void dibujar (Entorno e) {
 	 e.dibujarImagen(imagen, X,Y,0,escala);
-     
+     dibujarataques(e);
     
 }
+public void tick(Entorno e, double anchoPantalla) {
+    tiempoDisparo++;
+    if (tiempoDisparo >= intervaloDisparo && colocada) {
+        disparar();
+        tiempoDisparo = 0;
+    }
 
-
+    moverataques();
+    eliminarataquesFuera(anchoPantalla);
+    dibujar(e);
+}
+private void disparar() {
+    Image fuego = Herramientas.cargarImagen("ezgif-882e311c995332.gif"); 
+    for (int i = 0; i < ataques.length; i++) {
+        if (ataques[i] == null) {
+            ataques[i] = new AtaquePlanta(X + 20, Y, 4, fuego);
+            break;
+        }
+    }
+}
+private void moverataques() {
+    for (int i = 0; i < ataques.length; i++) {
+        if (ataques[i] != null) {
+            ataques[i].mover();
+        }
+    }
+    }
+private void dibujarataques(Entorno e) {
+    for (AtaquePlanta p : ataques) {
+        if (p != null) {
+            p.dibujar(e);
+        }
+    }
+}
+private void eliminarataquesFuera(double anchoPantalla) {
+    for (int i = 0; i < ataques.length; i++) {
+        if (ataques[i] != null && ataques[i].estaFuera(anchoPantalla)) {
+            ataques[i] = null;
+        }
+    }
+}
 public void moverA(double x, double y) {
     this.X = x;
     this.Y = y;

@@ -31,7 +31,7 @@ public class Juego extends InterfaceJuego
 	private Planta plantasDisponibles;
 	private Planta[] plantasTablero;          
 	private int maxTablero = 50;            
-	private double escala = 0.15;
+	private double escala = 0.1;
 	Planta plantaArrastrando = null;
 	private Planta plantaSeleccionada = null;
 	private boolean wPresionada = false;
@@ -53,14 +53,14 @@ public class Juego extends InterfaceJuego
 		
 		
 		plantasTablero = new Planta[maxTablero];
-		Image planta = Herramientas.cargarImagen("planta.gif");
+		Image planta = Herramientas.cargarImagen("planta.png");
 		plantasDisponibles = new Planta(100, 50, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
 		
 		
 		for (int i=0 ;i < regalos.length;i++) {
 			double posX = posXinical +(i *separacion)+ margensup;
 			this.regalos [i]= new Regalo (posX, posY);
-		this.zombies=new zombie [20];	
+		this.zombies=new zombie [15];	
 		this.cantzombies=0;
 		this.rnd=new Random();
 		
@@ -90,6 +90,7 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
+		
 		double mx = entorno.mouseX();
         double my = entorno.mouseY();
 			
@@ -115,15 +116,17 @@ public class Juego extends InterfaceJuego
 			}
 				
 			}
-			 for (int i = 0; i < maxTablero; i++) {
-			        if (plantasTablero[i] != null) {
-			            plantasTablero[i].dibujar(entorno);
-			        }
+			for (int i = 0; i < maxTablero; i++) {
+			    if (plantasTablero[i] != null) {
+			        plantasTablero[i].tick(entorno, entorno.ancho());
+			    }
+			}
+
 			        if (plantaArrastrando == null) {    
 		plantasDisponibles.dibujar(entorno);
 			        }
 		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
-		    plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.gif"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
+		    plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.png"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
 		     };
 	
 		 if (plantaArrastrando != null && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)) {
@@ -203,9 +206,6 @@ public class Juego extends InterfaceJuego
 		 }
 			 }
 		 
-			        
-	       
-	}
 	private boolean estaCeldaOcupada(int fila, int columna) {
 	    for (int i = 0; i < maxTablero; i++) {
 	        Planta p = plantasTablero[i];
