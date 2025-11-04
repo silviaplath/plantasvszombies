@@ -33,11 +33,12 @@ public class Juego extends InterfaceJuego
 	boolean juegoTerminado=false;
 	int totalGenerados=0;
 	int maxZombiesGenerar=50;
+	String mensajeFinal = " " ;
+	Color colorMensaje = Color.white;
 	
 	
 
-	
-	
+
 	private Planta plantasDisponibles;
 	private Planta[] plantasTablero;          
 	private int maxTablero = 50;            
@@ -48,6 +49,8 @@ public class Juego extends InterfaceJuego
 	private boolean sPresionada = false;
 	private boolean aPresionada = false;
 	private boolean dPresionada = false;
+	private double tiempoUltimoZombie = 0;
+	private double tiempoUltimaPlanta = 0;
 
 	Juego()
 	{
@@ -64,7 +67,7 @@ public class Juego extends InterfaceJuego
 		plantasTablero = new Planta[maxTablero];
 		plantasTablero = new Planta[maxTablero];
 		Image planta = Herramientas.cargarImagen("planta.png");
-		plantasDisponibles = new Planta(100, 50, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
+		plantasDisponibles = new Planta(100, 80, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
 		
 		
 		for (int i=0 ;i < regalos.length;i++) {
@@ -74,7 +77,7 @@ public class Juego extends InterfaceJuego
 
 		
 		}
-		this.zombies=new zombie [10];	
+		this.zombies=new zombie [1];	
 		this.cantzombies=0;
 		this.rnd=new Random();
 		this.entorno.iniciar();
@@ -105,15 +108,52 @@ public class Juego extends InterfaceJuego
 	 
 	public void tick()
 	{
-		if (juegoTerminado) return;
+		if (juegoTerminado) {
+			entorno.cambiarFont("Arial", 40, colorMensaje);
+			entorno.escribirTexto(mensajeFinal, 200, 300);
+		
+			
+			return;
+			
+		}
 		
 		double mx = entorno.mouseX();
         double my = entorno.mouseY();
+        
+        if(entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+        	boolean clicEnPlanta = false;
+        	
+        	for (int i = 0; i < plantasTablero.length; i++) {
+        		Planta p= plantasTablero[i];
+        		if (p != null && p.estaColocada()) {
+        			double distancia = Math.hypot(mx - p.getX(), my - p.getY());
+        			if (distancia < 30) {
+        				plantaSeleccionada=p;
+        				p.setSeleccionada(true);
+        				clicEnPlanta = true;
+        			}else {
+        				p.setSeleccionada(false);
+        			}
+        		}
+        	}
+        	if (!clicEnPlanta) {
+        		plantaSeleccionada = null;
+        		for (int i = 0; i < plantasTablero.length;i++) {
+        			if (plantasTablero[i] != null) {
+        				plantasTablero[i].setSeleccionada(false);
+        			}
+        		}
+        	}
+        }
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
 			tablero.sumarTiempo(1.0 / 60.0);
 		    tablero.dibujar(entorno);
+		    double tiempoActual = tablero.getTiempo();
+		    double tiempoFaltante = 5 - (tiempoActual - tiempoUltimaPlanta);
+		    if (tiempoFaltante < 0) tiempoFaltante = 0;
+		    tablero.setCuentaRegresiva(tiempoFaltante);
 			for (Regalo r : regalos) {
 				if (r != null) {
 	                r.dibujar(entorno);
@@ -138,8 +178,9 @@ public class Juego extends InterfaceJuego
 			        	}
 			        }
 			        if (z.getX()<120) {
+			        	mensajeFinal= "PERDISTE";
+			        	colorMensaje= Color.red;
 			        	juegoTerminado=true;
-			        	System.out.println("PERDISTE! un zombie atrapo a los regalos");
 			        }
 
 			        if (z.debeEliminarse()) {
@@ -154,10 +195,13 @@ public class Juego extends InterfaceJuego
 				}
 			}
 			if (totalEliminados >= objetivoEliminacion) {
-				System.out.println("GANASTE! eliminaste"+ totalEliminados + "zombies.");
+				mensajeFinal= "GANASTE";
+				colorMensaje= Color.green;
+			    juegoTerminado=true;
 			}
-				
+			
 			}
+			
 			for (int i = 0; i < maxTablero; i++) {
 			    if (plantasTablero[i] != null) {
 			        plantasTablero[i].tick(entorno, entorno.ancho());
@@ -167,9 +211,14 @@ public class Juego extends InterfaceJuego
 			        if (plantaArrastrando == null) {   
 		plantasDisponibles.dibujar(entorno);
 			        }
-		if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
-		    plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.png"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
-		     };
+			        if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && plantaArrastrando == null) {
+			           
+			            if (tiempoActual - tiempoUltimaPlanta >= 3) {
+			                plantaArrastrando = new Planta(100 , 50 , Herramientas.cargarImagen("planta.png"), escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
+			                tiempoUltimaPlanta = tiempoActual;
+			            }
+			       
+			        }
 	
 		 if (plantaArrastrando != null && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)) {
 			    plantaArrastrando.moverA(mx, my);
@@ -202,7 +251,7 @@ public class Juego extends InterfaceJuego
 			    plantaArrastrando = null;
 		 }
 	
-		 if (plantaSeleccionada != null) {
+		 if (plantaSeleccionada != null && plantaSeleccionada.isSeleccionada()) {
 
 			    // --- W ---
 			    if (entorno.estaPresionada('w')) {
@@ -273,6 +322,11 @@ public class Juego extends InterfaceJuego
 		}
 		 }
 		 
+
+	private void escribirTexto(String mensajeFinal2, int i, int j, int k) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private boolean estaCeldaOcupada(int fila, int columna) {
 	    for (int i = 0; i < maxTablero; i++) {

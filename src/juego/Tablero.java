@@ -17,6 +17,8 @@ public class Tablero {
 	 private double tiempo;
 	 private int zombiesEliminados;
 	 private int enemigosRestantes;
+	 private double cuentaRegresiva;
+
 public Tablero(int enemigosTotales) {	    
 	this.tiempo = 0;
     this.zombiesEliminados = 0;
@@ -31,12 +33,27 @@ public void sumarTiempo(double segundos) {
 }
 public void dibujar(Entorno e) {
     e.cambiarFont("araial",20,Color.BLACK);
-    e.escribirTexto("Tiempo: " + (int) tiempo + "s", 30, 30);
-    e.escribirTexto("Eliminados: " + zombiesEliminados, 200, 30);
+    if (cuentaRegresiva > 0) {
+        e.escribirTexto("Próxima planta en: " + (int) cuentaRegresiva + "s", 30, 30);
+    } else {
+        e.escribirTexto("¡Podés plantar!", 30, 30);
+    }
+    e.escribirTexto("Eliminados: " + zombiesEliminados, 250, 30);
     e.escribirTexto("Restantes: " + enemigosRestantes, 400, 30);
+    
+    int minutos = (int)(tiempo/60);
+    int segundos = (int)(tiempo % 60);
+    String tiempoTexto = String.format("tiempo: %02d:%02d", minutos, segundos);
+    e.escribirTexto(tiempoTexto, 600, 30);
 }
-public boolean juegoGanado() {
-    return enemigosRestantes <= 0;
+
+
+public double getTiempo() {
+    return tiempo;
 }
+public void setCuentaRegresiva(double segundos) {
+    this.cuentaRegresiva = segundos;
+}
+
 
 }

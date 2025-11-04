@@ -29,6 +29,15 @@ private int tiempoDisparo;
 private int intervaloDisparo;
 private Image imagenAtaque;
 
+private boolean seleccionada = false;
+
+public boolean isSeleccionada() {
+	return seleccionada;
+}
+public void setSeleccionada(boolean seleccionada) {
+	this.seleccionada= seleccionada;
+}
+
 public Planta(double x, double y, Image imagen, double escala,double tamcelda, double margenSup) {
     this.X = x;
     this.Y = y;
