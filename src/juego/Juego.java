@@ -28,6 +28,8 @@ public class Juego extends InterfaceJuego
 	int totalEliminados=0;
 	int objetivoEliminacion=50;
 	boolean juegoTerminado=false;
+	int totalGenerados=0;
+	int maxZombiesGenerar=50;
 	
 	
 	
@@ -68,21 +70,31 @@ public class Juego extends InterfaceJuego
 
 		
 		}
-		this.zombies=new zombie [15];	
+		this.zombies=new zombie [2];	
 		this.cantzombies=0;
 		this.rnd=new Random();
 		this.entorno.iniciar();
 	}
 	
 	public void generarzombies() {
-		if (cantzombies<zombies.length) {
-			int filaRandom=rnd.nextInt(cuadricula.getCantidadFilas());
-			double y= cuadricula.getPosYFila(filaRandom);
-			double x=entorno.ancho()+ 50;
-			
-			zombies[cantzombies]=new zombie(x,y);
-			cantzombies++;
+		if (totalGenerados >= maxZombiesGenerar)
+			return;
+		for (int i = 0; i < zombies.length; i++) {
+			if (zombies [i] == null) {
+				
+				int filaRandom=rnd.nextInt(cuadricula.getCantidadFilas());
+				double y= cuadricula.getPosYFila(filaRandom);
+				double x=entorno.ancho()+ 50;
+				
+				zombies[i]=new zombie(x,y);
+				totalGenerados++;
+				break;
+				
+				
+			}
 		}
+		
+		
 	}
     
 	
