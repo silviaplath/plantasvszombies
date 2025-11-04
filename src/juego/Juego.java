@@ -25,7 +25,7 @@ public class Juego extends InterfaceJuego
 	zombie[]zombies;
 	int cantzombies;
 	Random rnd;
-	
+	private Tablero tablero;
 	
 	
 	private Planta plantasDisponibles;
@@ -46,12 +46,12 @@ public class Juego extends InterfaceJuego
 		this.fondo = Herramientas.cargarImagen("fondo.png");
 		this.cuadricula = new cuadricula2 (0, 0, entorno);
 		this.regalos= new Regalo[5];
+		this.tablero = new Tablero(50);
 		double posY= 60;
 		double posXinical =80;
 		double separacion =80;
 		double margensup= 160;
-		
-		
+		plantasTablero = new Planta[maxTablero];
 		plantasTablero = new Planta[maxTablero];
 		Image planta = Herramientas.cargarImagen("planta.png");
 		plantasDisponibles = new Planta(100, 50, planta, escala,cuadricula.getTamCelda(), cuadricula.getMargenSup());
@@ -89,6 +89,8 @@ public class Juego extends InterfaceJuego
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
+			tablero.sumarTiempo(1.0 / 60.0);
+		    tablero.dibujar(entorno);
 			for (Regalo r : regalos) {
 				if (r != null) {
 	                r.dibujar(entorno);
@@ -103,7 +105,8 @@ public class Juego extends InterfaceJuego
 			        z.dibujar(entorno);
 
 			        if (z.debeEliminarse()) {
-			        	zombies[i] = null;
+			        zombies[i] = null;
+			        tablero.sumarZombieEliminado();	
 			        }
 				}
 			}
