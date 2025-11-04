@@ -50,7 +50,15 @@ public  cuadricula2 (double x , double y , Entorno e) {
    public int getCantidadFilas() {
 	   return this.filas;
    }
-	 
+   public int getCantidadColumnas() {
+	    return columnas;
+	}
+   public double getTamCelda() {
+	    return tamceldas;
+	}
+   public double getMargenSup() {
+	    return margensup;
+	}
 
 public void dibujar () {
     for (int i = 0; i < coorY.length; i++) {
@@ -66,6 +74,7 @@ public void dibujar () {
     }
 
 }
+<<<<<<< HEAD
 public boolean estaOcupado(int fila, int col) {
     return ocupado[fila][col];
 }
@@ -79,6 +88,21 @@ public int getColumnaDesdeX(double x) {
 
 public int getFilaDesdeY(double y) {
     return (int)((y - margensup) / tamceldas);
+=======
+public int getColumnaDesdeX(double x) {
+    int col = (int) (x / tamceldas);
+    if (col < 0 || col >= columnas) return -1;
+    return col;
+}
+public int getFilaDesdeY(double y) {
+    int fila = (int) ((y - margensup) / tamceldas);
+    if (fila < 0 || fila >= filas) return -1;
+    return fila;
+}
+public boolean estaDentro(double x, double y) {
+    return x >= 0 && x < columnas * tamceldas &&
+           y >= margensup && y < margensup + filas * tamceldas;
+>>>>>>> 02ec85035bbc70a6b772b55559d42dcefdb43e1f
 }
 }
 
