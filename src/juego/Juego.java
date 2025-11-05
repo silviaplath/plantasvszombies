@@ -121,7 +121,9 @@ public class Juego extends InterfaceJuego
         double my = entorno.mouseY();
         
         if(entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+        	
         	boolean clicEnPlanta = false;
+        	
         	
         	for (int i = 0; i < plantasTablero.length; i++) {
         		Planta p= plantasTablero[i];
@@ -131,20 +133,36 @@ public class Juego extends InterfaceJuego
         				plantaSeleccionada=p;
         				p.setSeleccionada(true);
         				clicEnPlanta = true;
-        			}else {
-        				p.setSeleccionada(false);
+        				
+        				for (int j = 0; j < plantasTablero.length; j++) {
+        					if (plantasTablero [j] != null && plantasTablero[j] != p) {
+        						plantasTablero[j].setSeleccionada(false);
+        					}
+        			}
+        			break;	
+        				
+        				
         			}
         		}
         	}
         	if (!clicEnPlanta) {
-        		plantaSeleccionada = null;
-        		for (int i = 0; i < plantasTablero.length;i++) {
-        			if (plantasTablero[i] != null) {
-        				plantasTablero[i].setSeleccionada(false);
+        		if (cuadricula.estaDentro(mx, my)) {
+        			for (int i = 0; i < plantasTablero.length; i++) {
+        				if (plantasTablero[i] != null) {
+        					plantasTablero[i].setSeleccionada(false);
+        				}
         			}
+        			plantaSeleccionada = null;
+        			
         		}
         	}
+        		
+        	
         }
+        
+        
+        
+        
 			
 			entorno.dibujarImagen(fondo, 400, 300, 0);
 			cuadricula.dibujar();
@@ -245,13 +263,19 @@ public class Juego extends InterfaceJuego
 		                    break;
 		                }
 		            } 
-			        plantaSeleccionada = plantaArrastrando; 
+			       
+			        for (int j= 0; j< plantasTablero.length; j++) {
+			        	if (plantasTablero[j] != null && plantasTablero[j] != plantaSeleccionada) {
+			        		plantasTablero[j].setSeleccionada(false);
+			        	}
+			        }
 			    }
 			    }
 			    plantaArrastrando = null;
 		 }
 	
 		 if (plantaSeleccionada != null && plantaSeleccionada.isSeleccionada()) {
+			
 
 			    // --- W ---
 			    if (entorno.estaPresionada('w')) {
@@ -298,6 +322,7 @@ public class Juego extends InterfaceJuego
 			    }
 		 }
 		 
+		 
 		 for (int i = 0; i < plantasTablero.length; i++) {
 			    Planta p = plantasTablero[i];
 			    if (p != null && p.isColocada()) {
@@ -321,6 +346,7 @@ public class Juego extends InterfaceJuego
 			    }
 		}
 		 }
+	
 		 
 
 	private void escribirTexto(String mensajeFinal2, int i, int j, int k) {
